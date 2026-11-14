@@ -1,0 +1,18 @@
+# 凭证与敏感数据 — 绝对不要提交
+accounts*.txt
+*.accounts.txt
+pool.enc.json
+master.key
+pool-stats.json
+pool-slots.json
+import-*.txt
+images/
+python-venv/
+.venv/
+
+# 测试与临时产物
+node_modules/
+dist/
+*.log
+.DS_Store
+Thumbs.db

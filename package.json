@@ -1,0 +1,39 @@
+{
+  "name": "ekko-gptfree-pool",
+  "version": "0.7.0",
+  "description": "Ekko 号池：Ekko Studio 插件，批量导入 ChatGPT 账号做自动轮询号池",
+  "type": "module",
+  "main": "./index.mjs",
+  "files": [
+    "plugin.json",
+    "ekko-server.mjs",
+    "ekko-client.mjs",
+    "index.mjs",
+    "lib",
+    "python",
+    "test",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "check": "node --check ekko-server.mjs && node --check ekko-client.mjs && node --check index.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {},
+  "keywords": [
+    "ekko-studio",
+    "chatgpt",
+    "pool",
+    "gptfree",
+    "batch-import",
+    "mcp"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qiyuechen0929/ekko-gptfree-pool"
+  }
+}

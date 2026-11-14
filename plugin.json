@@ -1,0 +1,45 @@
+{
+  "id": "pool",
+  "name": "Ekko 号池",
+  "version": "0.7.0",
+  "apiVersion": 1,
+  "description": "Ekko 号池（Ekko Studio 插件）：批量导入 ChatGPT 账号，后台 HTTP OAuth + TOTP 登录入池，多账号自动轮询与故障转移，在 Ekko 聊天中直接使用号池模型。",
+  "author": { "name": "qiyuechen0929", "url": "https://github.com/qiyuechen0929" },
+  "repository": "https://github.com/qiyuechen0929/ekko-gptfree-pool",
+  "homepage": "https://github.com/qiyuechen0929/ekko-gptfree-pool",
+  "issues": "https://github.com/qiyuechen0929/ekko-gptfree-pool/issues",
+  "license": "MIT",
+  "keywords": ["chatgpt", "pool", "gptfree", "batch-import"],
+  "server": "ekko-server.mjs",
+  "client": "ekko-client.mjs",
+  "permissions": ["agents", "ui", "tools", "commands"],
+  "configSchema": {
+    "type": "object",
+    "description": "GPT号池全局配置。",
+    "properties": {
+      "proxy": {
+        "type": "string",
+        "title": "HTTP(S) 代理",
+        "description": "登录与模型调用使用的代理，如 http://127.0.0.1:7890；留空直连。",
+        "maxLength": 500,
+        "secret": true
+      },
+      "pythonPath": {
+        "type": "string",
+        "title": "Python 路径（可选）",
+        "description": "显式指定 Python 3 解释器路径；留空自动探测。",
+        "maxLength": 500
+      }
+    },
+    "additionalProperties": false
+  },
+  "views": [
+    { "id": "pool", "title": "GPT号池", "slot": "page" },
+    { "id": "agent-settings", "title": "号池设置", "slot": "agent-settings", "icon": "chat" }
+  ],
+  "navigation": {
+    "main": [
+      { "viewId": "pool", "icon": "chat" }
+    ]
+  }
+}
