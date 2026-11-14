@@ -1,7 +1,7 @@
 {
   "id": "pool",
   "name": "ChatGPT 智能轮换",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "apiVersion": 1,
   "description": "ChatGPT 智能轮换（Ekko Studio 插件）：把你的多个 ChatGPT 账号统一托管——后台 OAuth + TOTP 自动登录保活、健康检查、多账号智能轮询与故障转移；在 Ekko 聊天中直接使用，模型按可用性自动调度，无需手动切换。账号凭据仅存本机加密存储。",
   "author": {

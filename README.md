@@ -7,7 +7,7 @@
 自动换号 · 自动重登 · 流式聊天 · AI 生图 · 额度统计 · 跨 Agent 调用
 
 [![Ekko Studio](https://img.shields.io/badge/Platform-Ekko_Studio-2f6feb?style=flat-square)](https://github.com/EKKOLearnAI/ekko-studio)
-[![Version](https://img.shields.io/badge/Version-0.7.0-blue?style=flat-square)](https://github.com/qiyuechen0929/ekko-gptfree-pool/releases)
+[![Version](https://img.shields.io/badge/Version-0.8.1-blue?style=flat-square)](https://github.com/qiyuechen0929/ekko-gptfree-pool/releases)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
 </div>

@@ -7,10 +7,30 @@
  *  - GUI service   -> plugin RPC + page views
  *  - provider auth -> ctx.extensions.agents.register (global mode runtime)
  */
-import { join } from "node:path";
+import { join, dirname } from "node:path";
 import { writeFile, rm } from "node:fs/promises";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
-const VERSION = "0.7.0";
+/**
+ * Manifest version is the single source of truth; the old hard-coded
+ * constant drifted (0.7.0 while plugin.json was already 0.8.0), so the page
+ * footer and agent status kept reporting the stale number.
+ */
+const VERSION = (() => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  for (const candidate of [join(here, "plugin.json"), join(here, "..", "plugin.json")]) {
+    try {
+      const manifest = JSON.parse(readFileSync(candidate, "utf8"));
+      if (typeof manifest?.version === "string" && manifest.version.trim()) {
+        return manifest.version.trim();
+      }
+    } catch {
+      // try next candidate
+    }
+  }
+  return "0.0.0";
+})();
 
 export function apply(ctx) {
   // lib modules resolve their data root from env at import/call time; point
