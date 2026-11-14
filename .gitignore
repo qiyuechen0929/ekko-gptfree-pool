@@ -6,7 +6,7 @@ master.key
 pool-stats.json
 pool-slots.json
 import-*.txt
-images/
+/images/
 python-venv/
 .venv/
 
