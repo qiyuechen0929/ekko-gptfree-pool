@@ -1,6 +1,6 @@
 {
   "name": "ekko-gptfree-pool",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Ekko 号池：Ekko Studio 插件，批量导入 ChatGPT 账号做自动轮询号池",
   "type": "module",
   "main": "./index.mjs",
