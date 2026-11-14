@@ -1,5 +1,5 @@
 /**
- * Ekko 号池 management page — three-tab layout (批量导入 / 我的账号池 / 额度统计). All operations via plugin RPC.
+ * ChatGPT 智能轮换 management page — three-tab layout (批量导入 / 我的账轮换池 / 额度统计). All operations via plugin RPC.
  */
 export async function mount(element, ctx) {
   const style = document.createElement("style");
@@ -283,12 +283,12 @@ export async function mount(element, ctx) {
 
   root.innerHTML = `
     <div class="eyebrow">GPT ACCOUNT POOL · EKKO STUDIO</div>
-    <h1>Ekko 号池</h1>
-    <p class="sub">把一批 ChatGPT 账号变成会自动轮询、自动换号、自动重登的号池。所有凭证仅在本机加密处理，界面只显示打码邮箱；请遵守上游使用规则与账号授权范围。</p>
+    <h1>ChatGPT 智能轮换</h1>
+    <p class="sub">把一批 ChatGPT 账号变成会自动轮询、自动换号、自动重登的轮换池。所有凭证仅在本机加密处理，界面只显示打码邮箱；请遵守上游使用规则与账号授权范围。</p>
 
     <div class="tabs">
       <button data-tab="import">批量导入</button>
-      <button data-tab="pool">我的账号池 <span class="count-chip" id="gfp-tab-count" style="display:none"></span></button>
+      <button data-tab="pool">我的账轮换池 <span class="count-chip" id="gfp-tab-count" style="display:none"></span></button>
       <button data-tab="quota">额度统计</button>
       <button data-tab="usage">调用指南</button>
     </div>
@@ -353,10 +353,10 @@ user4@example.com————password————BASE32TOTPSECRET————eyJ
       </div>
     </div>
 
-    <!-- ============================== 我的账号池 ============================== -->
+    <!-- ============================== 我的账轮换池 ============================== -->
     <div id="gfp-page-pool" class="page" style="display:none">
       <div class="card">
-        <div class="headline"><h2><span class="num">2</span>我的多账号池</h2>
+        <div class="headline"><h2><span class="num">2</span>我的多账轮换池</h2>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
             <button id="gfp-refresh">刷新列表</button>
             <button id="gfp-relogin-all">全部重新登录</button>
@@ -365,7 +365,7 @@ user4@example.com————password————BASE32TOTPSECRET————eyJ
         <div class="summary-line" id="gfp-pool-summary"></div>
         <table><thead><tr><th>账号</th><th>2FA</th><th>Token 状态</th><th>更新时间</th><th style="text-align:right">操作</th></tr></thead>
         <tbody id="gfp-rows"></tbody></table>
-        <div class="hint">fresh=Token 可用；stale=待自动重登（对话时会自动处理）；expired=已过期。号池模型在聊天中选择 Agent「Ekko 号池」的模型即可使用。</div>
+        <div class="hint">fresh=Token 可用；stale=待自动重登（对话时会自动处理）；expired=已过期。轮换池模型在聊天中选择 Agent「ChatGPT 智能轮换」的模型即可使用。</div>
       </div>
     </div>
 
@@ -378,7 +378,7 @@ user4@example.com————password————BASE32TOTPSECRET————eyJ
             <button id="gfp-quota-refresh">重新读取</button>
           </div>
         </div>
-        <p class="hint" style="margin:0 0 14px">实时读取号池各账号在 ChatGPT Web 端的生图剩余额度及本机调用统计；未检测或查询失败时如实展示状态，绝不伪造数值。</p>
+        <p class="hint" style="margin:0 0 14px">实时读取轮换池各账号在 ChatGPT Web 端的生图剩余额度及本机调用统计；未检测或查询失败时如实展示状态，绝不伪造数值。</p>
         <div class="summary-line" id="gfp-quota-summary"></div>
         <div class="cards" id="gfp-quota-cards"></div>
         <table><thead><tr><th>账号</th><th>类型</th><th>状态</th><th>剩余生图额度</th><th>成功 / 失败</th><th>最近检测</th><th style="text-align:right">操作</th></tr></thead>
@@ -389,7 +389,7 @@ user4@example.com————password————BASE32TOTPSECRET————eyJ
         <div class="headline"><h2><span class="num">4</span>最近调用记录</h2><span class="meta">最近 100 条 · 生图 / 对话 / 额度刷新</span></div>
         <table><thead><tr><th>时间</th><th>类型</th><th>账号</th><th>结果</th><th>说明</th></tr></thead>
         <tbody id="gfp-calllog-rows"></tbody></table>
-        <div class="hint">对话调用走号池自动轮询，账号列显示"自动轮询"表示由号池内部选号；生图记录的账号为实际使用的账号。</div>
+        <div class="hint">对话调用走轮换池自动轮询，账号列显示"自动轮询"表示由轮换池内部选号；生图记录的账号为实际使用的账号。</div>
       </div>
     </div>
 
@@ -399,8 +399,8 @@ user4@example.com————password————BASE32TOTPSECRET————eyJ
         <div class="headline"><h2><span class="num">A</span>方式一 · 聊天调用（最常用）</h2><span class="meta">单聊 / 群聊均支持</span></div>
         <div class="steps">
           <div class="step"><span class="no">1</span><span>新建一个<b>单聊会话</b>（或打开已有会话）。</span></div>
-          <div class="step"><span class="no">2</span><span>在输入框附近的 <b>Agent 选择器</b>里选「<b>Ekko 号池</b>」。</span></div>
-          <div class="step"><span class="no">3</span><span>在模型下拉里选号池模型：<code>gpt-5.6-luna</code>（默认）、<code>gpt-6-luna</code>、<code>gpt-5.6-terra</code>（支持推理档位）、<code>gpt-6-mini</code> 等，共 10 个。</span></div>
+          <div class="step"><span class="no">2</span><span>在输入框附近的 <b>Agent 选择器</b>里选「<b>ChatGPT 智能轮换</b>」。</span></div>
+          <div class="step"><span class="no">3</span><span>在模型下拉里选轮换池模型：<code>gpt-5.6-luna</code>（默认）、<code>gpt-6-luna</code>、<code>gpt-5.6-terra</code>（支持推理档位）、<code>gpt-6-mini</code> 等，共 10 个。</span></div>
           <div class="step"><span class="no">4</span><span>直接发消息即可。回复为流式输出；上下文由会话自动维护，多轮对话无需额外操作。</span></div>
         </div>
         <div class="hint">推理模型（terra / Thinking Mini 系列）可在模型设置里选 推理档位 low / medium / high；上下文窗口 128K，单次输出上限 16K。</div>
@@ -410,16 +410,16 @@ user4@example.com————password————BASE32TOTPSECRET————eyJ
         <div class="headline"><h2><span class="num">B</span>方式二 · 群聊调用</h2><span class="meta">多人群聊里当助手</span></div>
         <div class="steps">
           <div class="step"><span class="no">1</span><span>打开（或新建）群聊 → 群聊设置里<b>添加成员 / Agent</b>。</span></div>
-          <div class="step"><span class="no">2</span><span>选择「<b>Ekko 号池</b>」，保存后群内 <b>@ 它</b>即可触发回复，走同一套号池轮询。</span></div>
+          <div class="step"><span class="no">2</span><span>选择「<b>ChatGPT 智能轮换</b>」，保存后群内 <b>@ 它</b>即可触发回复，走同一套轮换池轮询。</span></div>
         </div>
-        <div class="hint">群聊中每个 @ 是一次独立调用，共用号池的限流冷却与故障转移。</div>
+        <div class="hint">群聊中每个 @ 是一次独立调用，共用轮换池的限流冷却与故障转移。</div>
       </div>
 
       <div class="card">
         <div class="headline"><h2><span class="num">C</span>方式三 · 工作流调用</h2><span class="meta">自动化批量任务</span></div>
         <div class="steps">
           <div class="step"><span class="no">1</span><span>在 Studio 的<b>工作流</b>编辑器里添加「Agent 运行」类节点。</span></div>
-          <div class="step"><span class="no">2</span><span>节点的 Agent 选「<b>Ekko 号池</b>」，模型任选号池模型；节点任务和上游输出会作为本轮输入传入。</span></div>
+          <div class="step"><span class="no">2</span><span>节点的 Agent 选「<b>ChatGPT 智能轮换</b>」，模型任选轮换池模型；节点任务和上游输出会作为本轮输入传入。</span></div>
           <div class="step"><span class="no">3</span><span>运行工作流即可批量调用；配合循环节点可实现逐条处理，配合定时调度可周期执行。</span></div>
         </div>
         <div class="hint">工作流复用现有节点的重试、分支与取消机制；单次节点运行上限一小时。</div>
@@ -427,27 +427,27 @@ user4@example.com————password————BASE32TOTPSECRET————eyJ
 
       <div class="card">
         <div class="headline"><h2><span class="num">D</span>方式四 · HTTP API 调用（外部程序）</h2><span class="meta">需要 Studio 的登录凭证</span></div>
-        <p class="hint" style="margin:0 0 12px">Ekko Studio 的后端是标准 JSON API，外部脚本可以用登录后的凭证直接驱动号池 Agent。整条链路是：<b>创建会话（指定 Agent）→ 发送输入 → 读历史拿回复</b>。</p>
+        <p class="hint" style="margin:0 0 12px">Ekko Studio 的后端是标准 JSON API，外部脚本可以用登录后的凭证直接驱动轮换池 Agent。整条链路是：<b>创建会话（指定 Agent）→ 发送输入 → 读历史拿回复</b>。</p>
         <div class="fmt">
-          <h3>1. 创建一个绑定号池 Agent 的会话：</h3>
-          <div class="fmt-row"><code>POST /api/studio/sessions&#10;{ "title": "号池测试", "agent": "plugin:pool/pool" }</code></div>
+          <h3>1. 创建一个绑定轮换池 Agent 的会话：</h3>
+          <div class="fmt-row"><code>POST /api/studio/sessions&#10;{ "title": "轮换池测试", "agent": "plugin:pool/pool" }</code></div>
           <h3 style="margin-top:12px">2. 向会话发送输入（返回后轮询/订阅运行状态）：</h3>
           <div class="fmt-row"><code>POST /api/studio/sessions/&lt;会话ID&gt;/run&#10;{ "input": "你好，介绍一下你自己" }</code></div>
           <h3 style="margin-top:12px">3. 读取会话历史获取回复：</h3>
           <div class="fmt-row"><code>GET /api/studio/sessions/&lt;会话ID&gt;/messages</code></div>
         </div>
-        <div class="hint">curl 示例（把 &lt;TOKEN&gt;、&lt;地址&gt; 换成你的 Studio 地址和登录凭证）：<code>curl -X POST "http://&lt;地址&gt;/api/studio/sessions" -H "Authorization: Bearer &lt;TOKEN&gt;" -H "Content-Type: application/json" -d '{"title":"号池测试","agent":"plugin:pool/pool"}'</code></div>
+        <div class="hint">curl 示例（把 &lt;TOKEN&gt;、&lt;地址&gt; 换成你的 Studio 地址和登录凭证）：<code>curl -X POST "http://&lt;地址&gt;/api/studio/sessions" -H "Authorization: Bearer &lt;TOKEN&gt;" -H "Content-Type: application/json" -d '{"title":"轮换池测试","agent":"plugin:pool/pool"}'</code></div>
         <div class="hint">模型与推理档位可在会话上通过 setModel 接口指定；凭证请勿写入公开脚本。</div>
       </div>
 
       <div class="card">
-        <div class="headline"><h2><span class="num">E</span>方式五 · 跨 Agent 工具调用（Pi 等其他 Agent）</h2><span class="meta">号池作为 MCP 工具，任何 Agent 都能用</span></div>
+        <div class="headline"><h2><span class="num">E</span>方式五 · 跨 Agent 工具调用（Pi 等其他 Agent）</h2><span class="meta">轮换池作为 MCP 工具，任何 Agent 都能用</span></div>
         <div class="steps">
-          <div class="step"><span class="no">1</span><span>插件启用后，以下 3 个工具自动注册到 Studio 的共享 MCP（<code>ekko-studio-plugins</code>），<b>Ekko、Hermes、Pi、Coding Agent 全部可用</b>，不要求会话绑定号池 Agent：</span></div>
-          <div class="step"><span class="no">·</span><span><code>pool__pool_status</code> — 查询号池账号数 / 可用数 / 打码列表</span></div>
-          <div class="step"><span class="no">·</span><span><code>pool__pool_chat</code> — 用号池完成一次单轮对话（参数：message，可选 model）</span></div>
+          <div class="step"><span class="no">1</span><span>插件启用后，以下 3 个工具自动注册到 Studio 的共享 MCP（<code>ekko-studio-plugins</code>），<b>Ekko、Hermes、Pi、Coding Agent 全部可用</b>，不要求会话绑定轮换池 Agent：</span></div>
+          <div class="step"><span class="no">·</span><span><code>pool__pool_status</code> — 查询轮换池账号数 / 可用数 / 打码列表</span></div>
+          <div class="step"><span class="no">·</span><span><code>pool__pool_chat</code> — 用轮换池完成一次单轮对话（参数：message，可选 model）</span></div>
           <div class="step"><span class="no">·</span><span><code>pool__generate_image</code> — 生图并返回本地文件路径（参数：prompt，可选 size / model / background）</span></div>
-          <div class="step"><span class="no">2</span><span>在任何 Agent 的聊天里直接说人话即可，比如「<b>/pool:image 一只戴墨镜的橘猫</b>」或自然语言「<b>帮我用号池生成一张雪山日出图标</b>」，AI 会自动调用对应工具。</span></div>
+          <div class="step"><span class="no">2</span><span>在任何 Agent 的聊天里直接说人话即可，比如「<b>/pool:image 一只戴墨镜的橘猫</b>」或自然语言「<b>帮我用轮换池生成一张雪山日出图标</b>」，AI 会自动调用对应工具。</span></div>
           <div class="step"><span class="no">3</span><span>生出的图片保存在本机插件数据目录的 images 文件夹里，AI 会把文件路径回复给你。</span></div>
         </div>
         <div class="hint">如果 Agent 的工具列表里没看到这些工具：刷新 MCP 管理页，或让 Agent 新开一轮运行（工具目录在轮次开始时加载）。命令完整格式：<code>/pool:image &lt;画面描述&gt;</code>。</div>
@@ -456,10 +456,10 @@ user4@example.com————password————BASE32TOTPSECRET————eyJ
       <div class="card">
         <div class="headline"><h2><span class="num">!</span>常见问题</h2></div>
         <table><tbody>
-          <tr><td class="wrap" style="width:38%"><b>模型列表为空 / 选不到号池模型</b></td><td class="wrap">号池里没有可用账号（或全部 Token 过期）。回「批量导入」加号，或在「我的账号池」对失败账号点「检测/刷新」。</td></tr>
+          <tr><td class="wrap" style="width:38%"><b>模型列表为空 / 选不到轮换池模型</b></td><td class="wrap">轮换池里没有可用账号（或全部 Token 过期）。回「批量导入」加号，或在「我的账轮换池」对失败账号点「检测/刷新」。</td></tr>
           <tr><td class="wrap"><b>导入时报 authorize_failed_403</b></td><td class="wrap">当前出口 IP 被 Cloudflare 拦截。在导入页的代理框（或插件中心的本插件配置）填一个能正常访问 ChatGPT 的 HTTP(S) 代理。</td></tr>
-          <tr><td class="wrap"><b>对话时报 429 限流</b></td><td class="wrap">免费号有速率限制。号池会自动冷却该账号并切换下一个；持续 429 说明所有账号都被限流，导入更多账号或稍后再试。</td></tr>
-          <tr><td class="wrap"><b>对话中途报 Token 失效</b></td><td class="wrap">号池会自动重新登录该账号并重试；不需要手动处理。若长期失败，在「我的账号池」点「检测/刷新」。</td></tr>
+          <tr><td class="wrap"><b>对话时报 429 限流</b></td><td class="wrap">免费号有速率限制。轮换池会自动冷却该账号并切换下一个；持续 429 说明所有账号都被限流，导入更多账号或稍后再试。</td></tr>
+          <tr><td class="wrap"><b>对话中途报 Token 失效</b></td><td class="wrap">轮换池会自动重新登录该账号并重试；不需要手动处理。若长期失败，在「我的账轮换池」点「检测/刷新」。</td></tr>
           <tr><td class="wrap"><b>想换更聪明的回答</b></td><td class="wrap">选 terra 或 Thinking Mini 系列，并把推理档位调到 high；代价是更慢、更耗额度。</td></tr>
         </tbody></table>
       </div>
@@ -470,7 +470,7 @@ user4@example.com————password————BASE32TOTPSECRET————eyJ
         <span class="star-mark">★</span> 觉得好用的话，欢迎给项目点个 Star：
         <code class="buyurl" data-external="https://github.com/qiyuechen0929/ekko-gptfree-pool">github.com/qiyuechen0929/ekko-gptfree-pool</code>（点击复制）
       </div>
-      <div class="meta-line">Ekko 号池 v<span id="gfp-version"></span> · 所有凭证仅在本机处理，请遵守上游使用规则与账号授权范围 · 更新请在插件中心查看</div>
+      <div class="meta-line">ChatGPT 智能轮换 v<span id="gfp-version"></span> · 所有凭证仅在本机处理，请遵守上游使用规则与账号授权范围 · 更新请在插件中心查看</div>
     </div>
   `;
 
@@ -629,7 +629,7 @@ user4@example.com————password————BASE32TOTPSECRET————eyJ
       const status = await call("get-import-status");
       renderStatus(status);
       if (status.noJob && $("#gfp-log").innerHTML === "") {
-        $("#gfp-log").innerHTML = `<div class="logend" style="color:var(--gfp-amber)">没有正在进行的导入任务。提示：导入进度保存在内存里，若 Studio 刚重载或重启，上一次的进度不会保留（已入池的账号不受影响，可在「我的账号池」查看）。</div>`;
+        $("#gfp-log").innerHTML = `<div class="logend" style="color:var(--gfp-amber)">没有正在进行的导入任务。提示：导入进度保存在内存里，若 Studio 刚重载或重启，上一次的进度不会保留（已入池的账号不受影响，可在「我的账轮换池」查看）。</div>`;
       }
       if (!status.running) {
         setImporting(false);
@@ -732,7 +732,7 @@ user4@example.com————password————BASE32TOTPSECRET————eyJ
               <button data-remove="${esc(a.email)}" class="danger">移除</button>
             </td>
           </tr>`).join("")
-        : `<tr><td colspan="5" style="opacity:.6">号池为空：切到「批量导入」标签页，按三步指引导入账号。</td></tr>`;
+        : `<tr><td colspan="5" style="opacity:.6">轮换池为空：切到「批量导入」标签页，按三步指引导入账号。</td></tr>`;
     } catch (err) {
       $("#gfp-rows").innerHTML = `<tr><td colspan="5" class="bad">读取失败：${esc(err?.message || err)}</td></tr>`;
     }
@@ -760,7 +760,7 @@ user4@example.com————password————BASE32TOTPSECRET————eyJ
       catch (err) { ctx.ui?.notify?.({ type: "error", message: String(err?.message || err) }); }
       finally { ev.target.disabled = false; }
     } else if (remove) {
-      const ok = await ctx.ui?.confirm?.({ title: "移除账号", message: `确定从号池移除 ${remove} 吗？` });
+      const ok = await ctx.ui?.confirm?.({ title: "移除账号", message: `确定从轮换池移除 ${remove} 吗？` });
       if (ok === false) return;
       try { await call("remove-account", { email: remove }); refreshAccounts(); }
       catch (err) { ctx.ui?.notify?.({ type: "error", message: String(err?.message || err) }); }
@@ -776,7 +776,7 @@ user4@example.com————password————BASE32TOTPSECRET————eyJ
       $("#gfp-quota-summary").innerHTML =
         `共 <b>${s.total ?? 0}</b> 个账号 · 可用 <b>${s.usable ?? 0}</b> · 限流 <b>${s.limited ?? 0}</b> · 待检测 <b>${s.pending ?? 0}</b>`;
       const cards = [
-        ["当前账号", s.total ?? 0, "号池中已入池账号数", ""],
+        ["当前账号", s.total ?? 0, "轮换池中已入池账号数", ""],
         ["可用账号", s.usable ?? 0, "Token 有效且有剩余生图额度", "good"],
         ["限流账号", s.limited ?? 0, "剩余额度为 0 或触发限流", "warn"],
         ["剩余额度", s.quotaSum ?? 0, "可用账号生图剩余额度之和", "good"],
@@ -795,7 +795,7 @@ user4@example.com————password————BASE32TOTPSECRET————eyJ
             <td>${e.ok ? `<span class="tag green">成功</span>` : `<span class="tag red">失败</span>`}</td>
             <td class="wrap">${esc(e.detail || "")}</td>
           </tr>`).join("")
-        : `<tr><td colspan="5" style="opacity:.55">还没有调用记录；生图、号池对话、刷新额度都会记在这里。</td></tr>`;
+        : `<tr><td colspan="5" style="opacity:.55">还没有调用记录；生图、轮换池对话、刷新额度都会记在这里。</td></tr>`;
 
       $("#gfp-quota-rows").innerHTML = (data.accounts || []).length
         ? (data.accounts || []).map((a) => {
@@ -817,7 +817,7 @@ user4@example.com————password————BASE32TOTPSECRET————eyJ
               <td style="text-align:right"><button data-probe="${esc(a.email)}">检测额度</button></td>
             </tr>`;
           }).join("")
-        : `<tr><td colspan="7" style="opacity:.6">号池为空。</td></tr>`;
+        : `<tr><td colspan="7" style="opacity:.6">轮换池为空。</td></tr>`;
     } catch (err) {
       $("#gfp-quota-rows").innerHTML = `<tr><td colspan="7" class="bad">读取失败：${esc(err?.message || err)}</td></tr>`;
     }

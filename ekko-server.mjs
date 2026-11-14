@@ -1,5 +1,5 @@
 /**
- * Ekko Studio plugin: GPT号池 (Ekko 号池).
+ * Ekko Studio plugin: ChatGPT 轮换 (ChatGPT 智能轮换).
  *
  * Reuses the upstream lib/ modules as-is; only the host integration layer
  * host-specific concerns are handled here:
@@ -100,9 +100,9 @@ export function apply(ctx) {
 
   const registration = ctx.extensions.agents.register({
     id: "pool",
-    name: "Ekko 号池",
+    name: "ChatGPT 智能轮换",
     vendor: "qiyuechen0929",
-    description: "ChatGPT 免费账号号池：多账号轮询、自动重登、故障转移。",
+    description: "ChatGPT 免费账号轮换池：多账号轮询、自动重登、故障转移。",
     agentApiVersion: 1,
     async getStatus() {
       return { installed: true, version: VERSION };
@@ -118,7 +118,7 @@ export function apply(ctx) {
           if (!rows.length) {
             return {
               status: "empty", source: "pool", scope: "builtin", models: [],
-              message: "Ekko 号池 为空：请打开 GPT号池 页面批量导入账号后再使用。",
+              message: "ChatGPT 智能轮换 为空：请打开 ChatGPT 轮换 页面批量导入账号后再使用。",
             };
           }
           const models = lib.text.WEB_TEXT_MODEL_SPECS.map((spec) => ({
@@ -141,7 +141,7 @@ export function apply(ctx) {
             await ready;
             const rows = await lib.vault.listPool();
             if (!rows.length) {
-              throw new Error("GPT号池 没有可用账号，请先在 GPT号池 页面批量导入。");
+              throw new Error("ChatGPT 轮换 没有可用账号，请先在 ChatGPT 轮换 页面批量导入。");
             }
 
             const messages = [];
@@ -203,20 +203,20 @@ export function apply(ctx) {
                       if (remainder) await run.output.emit({ type: "text.delta", text: remainder });
                     }
                   } else if (payload?.type === "error") {
-                    throw new Error(String(payload.error?.message || "号池上游返回错误"));
+                    throw new Error(String(payload.error?.message || "轮换池上游返回错误"));
                   }
                 }
               }
             } else {
               const json = await response.json();
               if (json?.error) {
-                throw new Error(String(json.error.message || "号池上游返回错误"));
+                throw new Error(String(json.error.message || "轮换池上游返回错误"));
               }
               finalText = String(json?.output_text || "");
             }
 
             if (!finalText.trim()) {
-              throw new Error("号池返回了空回复；请稍后重试或导入更多账号。");
+              throw new Error("轮换池返回了空回复；请稍后重试或导入更多账号。");
             }
             await logCall({ type: "chat", email: "", ok: true,
               detail: `聊天调用（${model}，流式）` });
@@ -417,7 +417,7 @@ export function apply(ctx) {
     return { results };
   });
 
-  ctx.log.info(`GPT号池 (Ekko) v${VERSION} 已加载；数据目录 ${ctx.paths.dataDir}`);
+  ctx.log.info(`ChatGPT 轮换 (Ekko) v${VERSION} 已加载；数据目录 ${ctx.paths.dataDir}`);
 
   // ---------------------------------------------------------------- MCP tools
   // Exposed in the shared ekko-studio-plugins MCP so ANY agent (Ekko, Hermes,
@@ -488,7 +488,7 @@ export function apply(ctx) {
 
   ctx.extensions.tools.register({
     name: "pool_status",
-    description: "当用户问号池状态、还有几个号、可不可用、能不能生图时调用本工具。查看 Ekko 号池 状态：账号数、可用数、生图剩余额度。无参数。",
+    description: "当用户问轮换池状态、还有几个号、可不可用、能不能生图时调用本工具。查看 ChatGPT 智能轮换 状态：账号数、可用数、生图剩余额度。无参数。",
     readOnly: true,
     inputSchema: { type: "object", properties: {} },
     async execute() {
@@ -496,10 +496,10 @@ export function apply(ctx) {
       const rows = await toolAccounts();
       const fresh = rows.filter((a) => lib.credentials.accessTokenState(a.accessToken).state === "unexpired_unverified");
       const masked = rows.map((r) => lib.credentials.safeAccountName(r.email));
-      if (!rows.length) return { ok: true, content: "号池为空：请先在 GPT号池 页面导入账号。", data: { total: 0, usable: 0 } };
+      if (!rows.length) return { ok: true, content: "轮换池为空：请先在 ChatGPT 轮换 页面导入账号。", data: { total: 0, usable: 0 } };
       return {
         ok: true,
-        content: `号池共 ${rows.length} 个账号，其中 ${fresh.length} 个 Token 有效。账号列表：${masked.join("、")}`,
+        content: `轮换池共 ${rows.length} 个账号，其中 ${fresh.length} 个 Token 有效。账号列表：${masked.join("、")}`,
         data: { total: rows.length, usable: fresh.length },
       };
     },
@@ -507,20 +507,20 @@ export function apply(ctx) {
 
   ctx.extensions.tools.register({
     name: "pool_chat",
-    description: "当用户要求用号池问答、免费 GPT 回答、号池聊天时调用本工具。用 Ekko 号池 的免费 ChatGPT 账号池完成一次对话（非流式，单轮）。参数：message 必填；model 可选（默认 gpt-5.6-luna）。",
+    description: "当用户要求用轮换池问答、免费 GPT 回答、轮换池聊天时调用本工具。用 ChatGPT 智能轮换 的免费 ChatGPT 账轮换池完成一次对话（非流式，单轮）。参数：message 必填；model 可选（默认 gpt-5.6-luna）。",
     readOnly: true,
     inputSchema: {
       type: "object",
       properties: {
         message: { type: "string", description: "要发送给模型的消息内容", maxLength: 32000 },
-        model: { type: "string", description: "号池文本模型 id，如 gpt-5.6-luna / gpt-6 / gpt-5-6-t-mini", maxLength: 64 },
+        model: { type: "string", description: "轮换池文本模型 id，如 gpt-5.6-luna / gpt-6 / gpt-5-6-t-mini", maxLength: 64 },
       },
       required: ["message"],
     },
     async execute({ message, model }) {
       await ready;
       const accounts = await toolAccounts();
-      if (!accounts.length) return { ok: false, content: "号池为空：请先在 GPT号池 页面导入账号。" };
+      if (!accounts.length) return { ok: false, content: "轮换池为空：请先在 ChatGPT 轮换 页面导入账号。" };
       const rawBody = {
         model: String(model || lib.text.DEFAULT_WEB_TEXT_MODEL),
         stream: false,
@@ -533,19 +533,19 @@ export function apply(ctx) {
       });
       const json = await response.json();
       if (json?.error) {
-        await logCall({ type: "chat", email: "", ok: false, detail: `号池对话失败：${String(json.error.message || "").slice(0, 120)}` });
-        return { ok: false, content: `号池上游错误：${String(json.error.message || "")}` };
+        await logCall({ type: "chat", email: "", ok: false, detail: `轮换池对话失败：${String(json.error.message || "").slice(0, 120)}` });
+        return { ok: false, content: `轮换池上游错误：${String(json.error.message || "")}` };
       }
       const reply = String(json?.output_text || "");
-      if (!reply.trim()) return { ok: false, content: "号池返回了空回复，请稍后重试。" };
-      await logCall({ type: "chat", email: "", ok: true, detail: `号池对话完成（${String(model || lib.text.DEFAULT_WEB_TEXT_MODEL)}）` });
+      if (!reply.trim()) return { ok: false, content: "轮换池返回了空回复，请稍后重试。" };
+      await logCall({ type: "chat", email: "", ok: true, detail: `轮换池对话完成（${String(model || lib.text.DEFAULT_WEB_TEXT_MODEL)}）` });
       return { ok: true, content: reply };
     },
   });
 
   ctx.extensions.tools.register({
     name: "generate_image",
-    description: "当用户要求生成图片、画图、画一张、画个、生成插画/图标/头像/表情包、文生图，或提到用号池/号池生图时调用本工具。用 Ekko 号池 的 ChatGPT 免费账号生图（gpt-image-2 / 2.6 系列，2.6 系列可生成 GIF）。参数：prompt 必填；size/model/background 可选。返回本地图片文件路径。",
+    description: "当用户要求生成图片、画图、画一张、画个、生成插画/图标/头像/表情包、文生图，或提到用轮换池/轮换池生图时调用本工具。用 ChatGPT 智能轮换 的 ChatGPT 免费账号生图（gpt-image-2 / 2.6 系列，2.6 系列可生成 GIF）。参数：prompt 必填；size/model/background 可选。返回本地图片文件路径。",
     readOnly: true,
     inputSchema: {
       type: "object",
@@ -560,7 +560,7 @@ export function apply(ctx) {
     async execute({ prompt, size, model, background }, run) {
       await ready;
       const accounts = await toolAccounts();
-      if (!accounts.length) return { ok: false, content: "号池为空：请先在 GPT号池 页面导入账号。" };
+      if (!accounts.length) return { ok: false, content: "轮换池为空：请先在 ChatGPT 轮换 页面导入账号。" };
       const modelId = lib.image.isImageModelId(String(model || "")) ? String(model) : lib.image.IMAGE_MODEL_ID;
       const res = await lib.image.executeWebImageGeneration({
         accounts,
@@ -589,13 +589,13 @@ export function apply(ctx) {
   // ------------------------------------------------------- chat commands
   ctx.extensions.commands.register({
     name: "image",
-    description: "用 Ekko 号池 生图：/pool:image <画面描述>",
+    description: "用 ChatGPT 智能轮换 生图：/pool:image <画面描述>",
     async execute(args, run) {
       const prompt = String(args || "").trim();
       if (!prompt) return "用法：/pool:image <画面描述>";
       await ready;
       const accounts = await toolAccounts();
-      if (!accounts.length) return "号池为空：请先在 GPT号池 页面导入账号。";
+      if (!accounts.length) return "轮换池为空：请先在 ChatGPT 轮换 页面导入账号。";
       const resImg = await lib.image.executeWebImageGeneration({
         accounts,
         request: { prompt, model: lib.image.IMAGE_MODEL_ID, background: "auto" },
